@@ -65,13 +65,13 @@ public class LifeGame extends JFrame implements ActionListener, Runnable {
 
     void stepLG() {
         gpanel.translate();
-        gpanel.update();
+        gpanel.repaint();
     }
 
     void initLG() {
         stopLG();
         gpanel.initRand();
-        gpanel.update();
+        gpanel.repaint();
     }
 
     public void actionPerformed(ActionEvent ev) {
@@ -90,7 +90,7 @@ public class LifeGame extends JFrame implements ActionListener, Runnable {
         while(running_flag == true) {
             stepLG();
             try {
-                runner.sleep(250L);
+                runner.sleep(100L);
             }
             catch(InterruptedException e) {}
         }

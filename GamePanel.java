@@ -5,8 +5,9 @@ import javax.swing.*;
 public class GamePanel extends JPanel {
 
     boolean[][] data, data_next;
-    CellPanel[][] board;
     int dataWidth, dataHeight;
+    Image offScreen;
+    Graphics offg;
 
     public GamePanel() {
         this(25, 25);
@@ -17,18 +18,10 @@ public class GamePanel extends JPanel {
         dataHeight = h;
         data = new boolean[dataHeight][dataWidth];
         data_next = new boolean[dataHeight][dataWidth];
-        board = new CellPanel[dataHeight][dataWidth];
         setBackground(Color.black);
         setPreferredSize(new Dimension(dataWidth * 5, dataHeight * 5));
-        setLayout(new GridLayout(dataHeight,dataWidth,1,1));
-        for(int i=0;i<dataHeight;i++) {
-            for(int j=0;j<dataWidth;j++) {
-                board[i][j] = new CellPanel();
-                add(board[i][j]);
-            }
-        }
         initRand();
-        update();
+        repaint();
     }
 
     void initRand() {
@@ -39,12 +32,22 @@ public class GamePanel extends JPanel {
         }
     }
 
-    void update() {
-        for(int i=0;i<dataHeight;i++) {
-            for(int j=0;j<dataWidth;j++) {
-                board[i][j].fill(data[i][j]);
-            }
+    public void paint(Graphics g) {
+        if(offScreen == null) {
+            offScreen = createImage(dataWidth * 5, dataHeight * 5);
+            offg = offScreen.getGraphics();
         }
+        offg.setColor(Color.BLACK);
+        offg.fillRect(0,0,dataWidth * 5, dataHeight * 5);
+        offg.setColor(Color.GREEN);
+        for(int i=0;i<dataHeight;i++) {
+            for(int j=0;j<dataWidth;j++)
+                if(data[i][j] == true)
+                    offg.fillRect(j * 5, i * 5, 4, 4);
+        }
+
+        g.clearRect(0,0,getSize().width,getSize().height);
+        g.drawImage(offScreen,0,0,this);
     }
 
     void translateCell(int y0, int x0) {
